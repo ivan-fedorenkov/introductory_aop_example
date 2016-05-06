@@ -19,10 +19,10 @@ public class TransactionalAspect {
         this.txManager = txManager;
     }
 
-    @Pointcut("@annotation(com.devexperts.aop.Transactional)")
+    @Pointcut("@annotation(com.devexperts.aop.Transactional) || @target(com.devexperts.aop.Transactional)")
     public void transactional() {}
 
-    @Around("transactional()")
+    @Around("com.devexperts.aop.Pointcuts.withinServicePackage() && transactional()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         Transaction tx = txManager.getTransaction();
         try {

@@ -1,5 +1,6 @@
 package com.devexperts.config;
 
+import com.devexperts.aop.LoggedAspect;
 import com.devexperts.aop.TransactionalAspect;
 import com.devexperts.domain.Person;
 import com.devexperts.service.CrudService;
@@ -25,6 +26,11 @@ public class AppConfig {
     @Bean
     public TransactionalAspect txAspect() {
         return new TransactionalAspect(txManager());
+    }
+
+    @Bean
+    public LoggedAspect loggedAspect() {
+        return new LoggedAspect();
     }
 
     @Bean
