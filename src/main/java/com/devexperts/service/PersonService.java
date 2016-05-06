@@ -7,21 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 /**
  * @author ifedorenkov
  */
 public class PersonService extends CrudServiceBase<Person, Long> {
 
-    /**
-     * Generate a number of {@link Person} objects.
-     */
-    private final List<Person> personList = LongStream.rangeClosed(1, 10)
-        .mapToObj(i -> new Person(i, "P" + i))
-        .collect(Collectors.toList());
-
+    private final List<Person> people = new ArrayList<>();
 
     @Override
     public Iterable<Person> findAll() {
@@ -30,7 +22,7 @@ public class PersonService extends CrudServiceBase<Person, Long> {
         Transaction tx = getTxManager().getTransaction();
         try {
             tx.begin();
-            List<Person> result = new ArrayList<>(personList);
+            List<Person> result = new ArrayList<>(people);
             tx.commit();
             if (isDebugEnabled())
                 debug("PersonService#findAll=" + result);
@@ -49,7 +41,7 @@ public class PersonService extends CrudServiceBase<Person, Long> {
         Transaction tx = getTxManager().getTransaction();
         try {
             tx.begin();
-            Optional<Person> result = personList.stream()
+            Optional<Person> result = people.stream()
                 .filter(p -> Objects.equals(p.getId(), id))
                 .findFirst();
             tx.commit();
@@ -78,12 +70,12 @@ public class PersonService extends CrudServiceBase<Person, Long> {
                 result = existing.get();
                 result.setName(person.getName());
             } else {
-                long lastId = personList.stream()
+                long lastId = people.stream()
                     .mapToLong(Person::getId)
                     .max()
                     .orElse(0L);
                 person.setId(lastId + 1);
-                personList.add(person);
+                people.add(person);
                 result = person;
             }
             tx.commit();
@@ -107,7 +99,7 @@ public class PersonService extends CrudServiceBase<Person, Long> {
             Optional<Person> existing = findOne(person.getId());
             if (!existing.isPresent())
                 throw new IllegalArgumentException("Can not remove a person. Entity not found.");
-            personList.remove(existing.get());
+            people.remove(existing.get());
             tx.commit();
             if (isInfoEnabled())
                 info("PersonService#remove=ok");
