@@ -24,7 +24,7 @@ public class PersonServiceTest {
     private static final String TEST_PERSON_NAME = "TEST_PERSON_NAME";
 
     @Autowired
-    private PersonService personService;
+    private CrudService<Person, Long> personService;
 
     @Test
     public void testCreate() {
