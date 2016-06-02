@@ -10,16 +10,16 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class AspectForBenchmark {
 
-    @Around(value = "within(com.devexperts.service..*) && target(com.devexperts.service.PersonService)")
+    @Around(value = "within(com.devexperts.service..*) && execution(* *(..)) && target(com.devexperts.service.PersonService)")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         try {
-            Thread.sleep(12);
+            Thread.sleep(1);
         } catch (InterruptedException ie) {
             throw new RuntimeException(ie);
         }
         Object result =  pjp.proceed();
         try {
-            Thread.sleep(34);
+            Thread.sleep(1);
         } catch (InterruptedException ie) {
             throw new RuntimeException(ie);
         }

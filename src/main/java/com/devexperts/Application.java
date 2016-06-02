@@ -41,22 +41,4 @@ public class Application {
         serviceHolder.service.remove(p);
     }
 
-    public static void main(String[] args) {
-        Person p = new Person();
-        p.setName(PERSON_NAME);
-
-        AspectJProxyFactory proxyFactory = new AspectJProxyFactory(new PersonService());
-        proxyFactory.addAspect(new AspectForBenchmark());
-        CrudService<Person, Long> service = proxyFactory.getProxy();
-        try {
-            PersonService pService = (PersonService) proxyFactory.getTargetSource().getTarget();
-            pService.setPersonService(service);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        p = service.save(p);
-        service.remove(p);
-    }
-
 }
