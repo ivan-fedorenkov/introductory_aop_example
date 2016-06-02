@@ -19,7 +19,6 @@ public class Application {
 
         public Service() {
             service = new PersonService();
-            service.setPersonService(service);
         }
     }
 
