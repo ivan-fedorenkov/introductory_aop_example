@@ -18,10 +18,10 @@ import java.util.Optional;
 public class PersonService extends CrudServiceBase<Person, Long> {
 
     private final List<Person> people = new ArrayList<>();
-    private PersonService personService;
+    private CrudService<Person, Long> personService;
 
     @Autowired
-    public void setPersonService(PersonService personService) {
+    public void setPersonService(CrudService<Person, Long> personService) {
         this.personService = personService;
     }
 

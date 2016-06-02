@@ -10,7 +10,7 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class AspectForBenchmark {
 
-    @Around(value = "within(com.devexperts.service..*) && this(com.devexperts.service.PersonService)")
+    @Around(value = "within(com.devexperts.service..*) && target(com.devexperts.service.PersonService)")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         try {
             Thread.sleep(12);

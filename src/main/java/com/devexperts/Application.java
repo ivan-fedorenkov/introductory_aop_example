@@ -1,10 +1,13 @@
 package com.devexperts;
 
+import com.devexperts.aop.AspectForBenchmark;
 import com.devexperts.domain.Person;
+import com.devexperts.service.CrudService;
 import com.devexperts.service.PersonService;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 /**
  * @author ifedorenkov
@@ -15,11 +18,18 @@ public class Application {
 
     @State(Scope.Benchmark)
     public static class Service {
-        private final PersonService service;
+        private final CrudService<Person, Long> service;
 
         public Service() {
-            service = new PersonService();
-            service.setPersonService(service);
+            AspectJProxyFactory proxyFactory = new AspectJProxyFactory(new PersonService());
+            proxyFactory.addAspect(new AspectForBenchmark());
+            service = proxyFactory.getProxy();
+            try {
+                PersonService pService = (PersonService) proxyFactory.getTargetSource().getTarget();
+                pService.setPersonService(service);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -29,6 +39,24 @@ public class Application {
         p.setName(PERSON_NAME);
         p = serviceHolder.service.save(p);
         serviceHolder.service.remove(p);
+    }
+
+    public static void main(String[] args) {
+        Person p = new Person();
+        p.setName(PERSON_NAME);
+
+        AspectJProxyFactory proxyFactory = new AspectJProxyFactory(new PersonService());
+        proxyFactory.addAspect(new AspectForBenchmark());
+        CrudService<Person, Long> service = proxyFactory.getProxy();
+        try {
+            PersonService pService = (PersonService) proxyFactory.getTargetSource().getTarget();
+            pService.setPersonService(service);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        p = service.save(p);
+        service.remove(p);
     }
 
 }
