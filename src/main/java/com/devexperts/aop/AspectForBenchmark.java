@@ -12,18 +12,7 @@ public class AspectForBenchmark {
 
     @Around(value = "within(com.devexperts.service..*) && execution(* *(..)) && target(com.devexperts.service.PersonService)")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-        Object result =  pjp.proceed();
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-        return result;
+        return pjp.proceed();
     }
 
 }
