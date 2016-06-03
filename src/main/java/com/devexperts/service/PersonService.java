@@ -21,54 +21,20 @@ public class PersonService extends CrudServiceBase<Person, Long> {
     @Logged
     @Override
     public Iterable<Person> findAll() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
-        ArrayList<Person> people = new ArrayList<>(this.people);
-
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
-        return people;
+        return new ArrayList<>(this.people);
     }
 
     @Logged
     @Override
     public Optional<Person> findOne(Long id) {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
-        Optional<Person> person = people.stream()
-                .filter(p -> Objects.equals(p.getId(), id))
-                .findFirst();
-
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
-        return person;
+        return people.stream()
+            .filter(p -> Objects.equals(p.getId(), id))
+            .findFirst();
     }
 
     @Logged(level = LogLevel.INFO)
     @Override
     public Person save(Person person) {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
         Person result;
         if (person.getId() != 0) {
             Optional<Person> existing = findOne(person.getId());
@@ -85,35 +51,16 @@ public class PersonService extends CrudServiceBase<Person, Long> {
             people.add(person);
             result = person;
         }
-
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
         return result;
     }
 
     @Logged(level = LogLevel.INFO)
     @Override
     public void remove(Person person) {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-
         Optional<Person> existing = findOne(person.getId());
         if (!existing.isPresent())
             throw new IllegalArgumentException("Can not remove a person. Entity not found.");
         people.remove(existing.get());
-
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
     }
 
 }
