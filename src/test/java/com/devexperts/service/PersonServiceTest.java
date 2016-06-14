@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
  * @author ifedorenkov
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = "logging.level.root=DEBUG")
 @DirtiesContext
 public class PersonServiceTest {
 
