@@ -4,6 +4,7 @@ import com.devexperts.service.CrudServiceBase;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.StringJoiner;
 
@@ -11,6 +12,7 @@ import java.util.StringJoiner;
  * @author ifedorenkov
  */
 @Aspect
+@EnableAspectJAutoProxy
 public class LoggedAspect {
 
     @Pointcut("com.devexperts.aop.Pointcuts.withinServicePackage() && target(service) && @annotation(logged)")
