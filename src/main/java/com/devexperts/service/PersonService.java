@@ -13,6 +13,7 @@ import java.util.Optional;
 /**
  * @author ifedorenkov
  */
+@Transactional
 public class PersonService extends CrudServiceBase<Person, Long> {
 
     private final List<Person> people = new ArrayList<>();
@@ -31,7 +32,6 @@ public class PersonService extends CrudServiceBase<Person, Long> {
             .findFirst();
     }
 
-    @Transactional
     @Logged(level = LogLevel.INFO)
     @Override
     public Person save(Person person) {
@@ -54,7 +54,6 @@ public class PersonService extends CrudServiceBase<Person, Long> {
         return result;
     }
 
-    @Transactional
     @Logged(level = LogLevel.INFO)
     @Override
     public void remove(Person person) {
