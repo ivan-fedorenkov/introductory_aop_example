@@ -4,7 +4,6 @@ import com.devexperts.service.CrudServiceBase;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.StringJoiner;
 
@@ -12,14 +11,13 @@ import java.util.StringJoiner;
  * @author ifedorenkov
  */
 @Aspect
-@EnableAspectJAutoProxy
 public class LoggedAspect {
 
-    @Pointcut("com.devexperts.aop.Pointcuts.withinServicePackage() && target(service) && @annotation(logged)")
-    public void logged(CrudServiceBase<?, ?> service, Logged logged) {}
+    @Pointcut(value = "this(service) && @annotation(logged)", argNames = "service,logged")
+    public void logged(CrudServiceBase service, Logged logged) {}
 
-    @Before(value = "logged(service, logged)", argNames = "joinPoint,service,logged")
-    public void before(JoinPoint joinPoint, CrudServiceBase<?, ?> service, Logged logged) {
+    @Before(value = "Pointcuts.serviceMethodExecution() && logged(service, logged)", argNames = "joinPoint,service,logged")
+    public void before(JoinPoint joinPoint, CrudServiceBase service, Logged logged) {
         if (isLogSupported(service, logged.level())) {
             StringBuilder msgBuilder = new StringBuilder();
             appendTarget(msgBuilder, joinPoint);
@@ -28,8 +26,8 @@ public class LoggedAspect {
         }
     }
 
-    @AfterReturning(pointcut = "logged(service, logged)", returning = "result", argNames = "joinPoint,result,service,logged")
-    public void afterReturning(JoinPoint joinPoint, Object result, CrudServiceBase<?, ?> service, Logged logged) {
+    @AfterReturning(pointcut = "Pointcuts.serviceMethodExecution() && logged(service, logged)", returning = "result", argNames = "joinPoint,result,service,logged")
+    public void afterReturning(JoinPoint joinPoint, Object result, CrudServiceBase service, Logged logged) {
         if (isLogSupported(service, logged.level())) {
             StringBuilder msgBuilder = new StringBuilder();
             appendTarget(msgBuilder, joinPoint);
@@ -38,8 +36,8 @@ public class LoggedAspect {
         }
     }
 
-    @AfterThrowing(pointcut = "logged(service, logged)", argNames = "joinPoint,service,logged")
-    public void afterThrowing(JoinPoint joinPoint, CrudServiceBase<?, ?> service, Logged logged) {
+    @AfterThrowing(pointcut = "Pointcuts.serviceMethodExecution() && logged(service, logged)", argNames = "joinPoint,service,logged")
+    public void afterThrowing(JoinPoint joinPoint, CrudServiceBase service, Logged logged) {
         if (isLogSupported(service, LogLevel.ERROR)) {
             StringBuilder msgBuilder = new StringBuilder();
             appendTarget(msgBuilder, joinPoint);
@@ -72,7 +70,7 @@ public class LoggedAspect {
         }
     }
     
-    private static boolean isLogSupported(CrudServiceBase<?, ?> service, LogLevel logLevel) {
+    private static boolean isLogSupported(CrudServiceBase service, LogLevel logLevel) {
         switch (logLevel) {
             case DEBUG:
                 return service.isDebugEnabled();
@@ -85,7 +83,7 @@ public class LoggedAspect {
         }
     }
     
-    private static void log(CrudServiceBase<?, ?> service, LogLevel logLevel, String msg) {
+    private static void log(CrudServiceBase service, LogLevel logLevel, String msg) {
         switch (logLevel) {
             case DEBUG:
                 service.debug(msg);

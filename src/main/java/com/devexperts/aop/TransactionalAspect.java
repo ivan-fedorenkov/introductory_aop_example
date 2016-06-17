@@ -12,17 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Aspect
 public class TransactionalAspect {
 
-    private final TransactionManager txManager;
+    private TransactionManager txManager;
 
     @Autowired
-    public TransactionalAspect(TransactionManager txManager) {
+    public void setTxManager(TransactionManager txManager) {
         this.txManager = txManager;
     }
 
-    @Pointcut("@annotation(com.devexperts.aop.Transactional) || @target(com.devexperts.aop.Transactional)")
+    @Pointcut("@annotation(Transactional) || within(@Transactional *)")
     public void transactional() {}
 
-    @Around("com.devexperts.aop.Pointcuts.withinServicePackage() && transactional()")
+    @Around("com.devexperts.aop.Pointcuts.serviceMethodExecution() && transactional()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         Transaction tx = txManager.getTransaction();
         try {

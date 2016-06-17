@@ -63,4 +63,10 @@ public class PersonService extends CrudServiceBase<Person, Long> {
         people.remove(existing.get());
     }
 
+    private Optional<Person> findOneInternal(Long id) {
+        return people.stream()
+            .filter(p -> Objects.equals(p.getId(), id))
+            .findFirst();
+    }
+
 }

@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class Pointcuts {
 
-    @Pointcut("within(com.devexperts.service..*)")
-    public void withinServicePackage() {}
+    @Pointcut("execution(public * com.devexperts.service.*.*(..))")
+    public void serviceMethodExecution() {}
 
 }

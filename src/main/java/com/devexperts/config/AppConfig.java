@@ -1,6 +1,5 @@
 package com.devexperts.config;
 
-import com.devexperts.aop.LoggedAspect;
 import com.devexperts.aop.TransactionalAspect;
 import com.devexperts.domain.Person;
 import com.devexperts.service.CrudService;
@@ -9,13 +8,11 @@ import com.devexperts.tx.SimpleTransactionManager;
 import com.devexperts.tx.TransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author ifedorenkov
  */
 @Configuration
-@EnableAspectJAutoProxy
 public class AppConfig {
 
     @Bean
@@ -24,13 +21,11 @@ public class AppConfig {
     }
 
     @Bean
-    public TransactionalAspect txAspect() {
-        return new TransactionalAspect(txManager());
-    }
-
-    @Bean
-    public LoggedAspect loggedAspect() {
-        return new LoggedAspect();
+    public TransactionalAspect txAspect() throws Throwable {
+        TransactionalAspect txAspect = (TransactionalAspect) Class.forName("com.devexperts.aop.TransactionalAspect")
+            .getMethod("aspectOf").invoke(null);
+        txAspect.setTxManager(txManager());
+        return txAspect;
     }
 
     @Bean
