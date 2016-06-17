@@ -1,6 +1,6 @@
 package com.devexperts.config;
 
-import com.devexperts.aop.TransactionalAspect;
+import com.devexperts.aop.TransactionalAspectBase;
 import com.devexperts.domain.Person;
 import com.devexperts.service.CrudService;
 import com.devexperts.service.PersonService;
@@ -21,8 +21,9 @@ public class AppConfig {
     }
 
     @Bean
-    public TransactionalAspect txAspect() throws Throwable {
-        TransactionalAspect txAspect = (TransactionalAspect) Class.forName("com.devexperts.aop.TransactionalAspect")
+    public TransactionalAspectBase txAspect() throws Throwable {
+        TransactionalAspectBase txAspect =
+            (TransactionalAspectBase) Class.forName("com.devexperts.aop.TransactionalAspect")
             .getMethod("aspectOf").invoke(null);
         txAspect.setTxManager(txManager());
         return txAspect;
