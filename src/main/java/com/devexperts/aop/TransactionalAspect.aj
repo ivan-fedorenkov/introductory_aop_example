@@ -16,9 +16,9 @@ public aspect TransactionalAspect extends TransactionalAspectBase {
             Object result = proceed();
             tx.commit();
             return result;
-        } catch (Throwable t) {
+        } catch (RuntimeException e) {
             tx.rollback();
-            throw new RuntimeException(t);
+            throw e;
         }
     }
 
